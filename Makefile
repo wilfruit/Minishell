@@ -1,4 +1,4 @@
-SRC = start_pars.c special_characters.c
+SRC = start_pars.c special_characters.c main.c built_stuct.c
 
 CC = gcc
 

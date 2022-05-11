@@ -1,34 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
+/*   test_arguments.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/03 22:38:54 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/09 11:44:58 by avaures          ###   ########.fr       */
+/*   Created: 2022/05/09 15:04:49 by avaures           #+#    #+#             */
+/*   Updated: 2022/05/10 14:54:26 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <string.h>
-#include "libft.h"
+#include "mini_shell"
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
-{
-	unsigned int	i;
-
-	i = 0;
-	if (!src)
-		return (ft_strlen(src));
-	if (size > 0)
-	{
-		while (size - 1 > i && src[i])
-		{
-			dest[i] = src[i];
-			i++;
-		}
-		dest[i] = '\0';
-	}
-	while (src[i])
-		i++;
-	return (i);
-}
+int	check_arguments()
