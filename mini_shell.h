@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/11 14:53:49 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/13 14:44:36 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,14 @@ typedef struct	s_pipe
 	int	nb_token;
 }	t_pipe;
 
+int	is_redirection(char c);
 int	set_struct(t_manage_pipe utils, t_pipe **prompt);
 void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt);
 void	*found_len_token(t_manage_pipe utils, t_pipe **prompt);
 void	*set_token(t_manage_pipe utils, t_pipe **prompt);
 void	*make_tab_cmd(t_manage_pipe *mpipe, char *line);
 void	*set_manage(t_manage_pipe *mpipe, char *line);
-void	len_cmd_pipe(t_manage_pipe *mpipe, char *line);
+void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line);
 int	size_cmd_tab(char *line);
 char	*set_path(char **infos);
 void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line);

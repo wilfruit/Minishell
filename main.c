@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 10:35:38 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/11 15:16:47 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/12 11:07:22 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "mini_shell.h"
@@ -25,7 +25,8 @@ int main(int argc, char **argv, char **env)
 	{
 		int	i = -1;
 		printf("%s\n", line = readline( "mshell> " ));
-		all_pipe_cmd(&mpipe, line);
+		if (all_pipe_cmd(&mpipe, line) == NULL)
+			return (0);
 		set_struct(mpipe, &prompt);
 //		set_manage(&mpipe, line);
 //		while (++i < mpipe.nb_cmd)

@@ -6,17 +6,16 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 09:31:14 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/11 17:57:54 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/13 17:15:11 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h"
 
-void	len_cmd_pipe(t_manage_pipe *mpipe, char *line)
+void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 {
 	int	r;
 	int	cmd;
-	
 	r = 0;
 	cmd = 0;
 	mpipe->size = 0;
@@ -31,29 +30,53 @@ void	len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 				mpipe->size++;
 				r++;
 			}
+
+			if (line[r] != '\'')
+				return (write(1, "invalid syntax\n", 15), NULL);
+			mpipe->size++;
+			r++;
 		}
-		if (line[r] == '\"')
+		else if (is_redirection(line[r]) == 1)
+		{
+			mpipe->size++;
+			r++;
+			if (is_redirection(line[r]) == 1)
+			{
+				if (line[r - 1] != line[r])
+					return (write(1, "syntax error near unexpected token\n", 35), NULL);
+				mpipe->size++;
+				r++;
+			}
+			
+		}
+		else if (line[r] == '\"')
 		{
 			r++;
 			mpipe->size++;
-			while (line[r] && line[r] != '\'')
+			while (line[r] && line[r] != '\"')
 			{
 				mpipe->size++;
 				r++;
 			}
+			if (line[r] != '\"')
+				return (write(1, "invalid syntax\n", 15), NULL);
+			mpipe->size++;
+			r++;
 		}
-		if (line[r] == '|')
+		else if (line[r] == '|')
 		{
 			(*mpipe).size_cmd[cmd] = (*mpipe).size;
 			mpipe->size = 0;
 			cmd++;
 			r++;
 		}
-		mpipe->size++;
-		r++;
+		else
+		{
+			mpipe->size++;
+			r++;
+		}
 	}
 	mpipe->size_cmd[cmd] = mpipe->size;
-	return ;
 }
 
 void	*set_manage(t_manage_pipe *mpipe, char *line)
@@ -66,18 +89,19 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	mpipe->k = 0;
 	mpipe->size = 0;
 	mpipe->nb_cmd = size_cmd_tab(line);
-	mpipe->size_cmd = malloc(sizeof(int) * mpipe->nb_cmd);
-	mpipe->pipecmd = malloc(sizeof(char *) * mpipe->nb_cmd);
+	mpipe->size_cmd = ft_calloc(sizeof(int), mpipe->nb_cmd);
+	mpipe->pipecmd = ft_calloc(sizeof(char *), mpipe->nb_cmd);
 	if (!mpipe->size_cmd || !mpipe->pipecmd)
 		return (NULL);
 	while (++tmp < mpipe->nb_cmd)
 		mpipe->size_cmd[tmp] = 0; 
-	len_cmd_pipe(mpipe, line);
+	if (len_cmd_pipe(mpipe, line) == NULL)
+		return (NULL);
 	tmp = -1;
 	while (++tmp < mpipe->nb_cmd)
 	{
 		printf("tmp : %d/ nb_cmd : %d/ lencmd : %d\n", tmp, mpipe->nb_cmd, mpipe->size_cmd[tmp]);
-		mpipe->pipecmd[tmp] = malloc(sizeof(char) * (mpipe->size_cmd[tmp] + 1));
+		mpipe->pipecmd[tmp] = ft_calloc(sizeof(char), (mpipe->size_cmd[tmp] + 1));
 		if (mpipe->pipecmd[tmp] == NULL)
 			return (NULL);
 	}
@@ -93,27 +117,9 @@ void	*make_tab_cmd(t_manage_pipe *mpipe, char *line)
 		mpipe->j = 0;
 		while (mpipe->j < (*mpipe).size_cmd[mpipe->k])
 		{
-			if (line[l] == '\'' && line[l + 1] != '\'' && line[l + 1])
-			{
-				l++;
-				(*mpipe).pipecmd[mpipe->i][mpipe->j] = line[l];
-			}
-			else if (line[l] == '\'' && line[l + 1] == '\'' && line[l + 2])
-			{
-				l += 2;
-				(*mpipe).pipecmd[mpipe->i][mpipe->j] = line[l];
-			}
-			else if (line[l] == '\'' && line[l + 1] == '\0')
-			{
-				l++;
-				(*mpipe).pipecmd[mpipe->i][mpipe->j] = '\0'; 
-			}
-			else
-			{
-				(*mpipe).pipecmd[mpipe->i][mpipe->j] = line[l];
-				mpipe->j++;
-				l++;
-			}
+			(*mpipe).pipecmd[mpipe->i][mpipe->j] = line[l];
+			mpipe->j++;
+			l++;
 		}
 		l++;
 		(*mpipe).pipecmd[mpipe->i][mpipe->j] = '\0';
