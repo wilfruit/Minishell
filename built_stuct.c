@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42->fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/13 17:14:06 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/16 18:25:13 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,28 +205,19 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 			v = 0;
 			while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
-			if (is_redirection((*prompt)[utils.i].cmd[utils.j]) || is_redirection((*prompt)[utils.i].cmd[utils.j - 1]))
+			if (is_redirection((*prompt)[utils.i].cmd[utils.j]))
 			{
-				if (is_redirection((*prompt)[utils.i].cmd[utils.j - 1]))
+				while (is_redirection((*prompt)[utils.i].cmd[utils.j]))
 				{
-					utils.j--;
-					while (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-					{
-							(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-							utils.j++;
-							v++;
-					}
+						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
+						utils.j++;
+						v++;
+				}
+				if ((*prompt)[utils.i].cmd[utils.j] != ' ')
+				{
 					utils.k++;
 					v = 0;
-				//	utils.j--;
 				}
-				else
-					while (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-					{
-							(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-							utils.j++;
-							v++;
-					}
 			}
 			while (((*prompt)[utils.i].cmd[utils.j] && 
 			(*prompt)[utils.i].cmd[utils.j] != ' ') && 
@@ -262,7 +253,6 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 					v++;
 				}
 			}
-			utils.j++;
 			utils.k++;
 		//	printf("size_token :%d %d\n",utils.k, prompt[utils.i]->scmd[utils.k].len_value);
 		}

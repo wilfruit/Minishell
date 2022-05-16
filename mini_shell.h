@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/13 14:44:36 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/16 16:21:28 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@
 # include <stdlib.h>
 # include "./libft/libft.h"
 
+# define TOKEN_CMD 0
+# define TOKEN_ARG 1
+# define TOKEN_OUTPUT_REDIRECTION 2
+# define TOKEN_OUTPUT_ERROR_EDIRECTION 3
+# define TOKEN_INTPUT_REDIRECTION 4
+# define TOKEN_INTPUT_DELIMITER_REDIRECTION 5
+# define TOKEN_FILE 6
 typedef struct s_manage_pipe
 {
 	int	i;
