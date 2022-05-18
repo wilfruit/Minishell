@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/16 16:21:28 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/18 18:00:48 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include "./libft/libft.h"
+#include <signal.h>
 
 # define TOKEN_CMD 0
 # define TOKEN_ARG 1
@@ -29,12 +30,14 @@
 # define TOKEN_INTPUT_REDIRECTION 4
 # define TOKEN_INTPUT_DELIMITER_REDIRECTION 5
 # define TOKEN_FILE 6
+
 typedef struct s_manage_pipe
 {
 	int	i;
 	int	j;
 	int	k;
 	int	size;
+	int	end;
 	int	nb_cmd;
 	int	*size_cmd;
 	char	**pipecmd;
@@ -56,8 +59,13 @@ typedef struct	s_pipe
 	int	nb_token;
 }	t_pipe;
 
+void	forced_prompt(int sig);
+void	forced_continue(int sig);
+int	control(void);
+void	free_struct(t_manage_pipe utils, t_pipe **prompt);
+void	free_token(t_manage_pipe utils, t_pipe **prompt);
 int	is_redirection(char c);
-int	set_struct(t_manage_pipe utils, t_pipe **prompt);
+int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt);
 void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt);
 void	*found_len_token(t_manage_pipe utils, t_pipe **prompt);
 void	*set_token(t_manage_pipe utils, t_pipe **prompt);
@@ -67,5 +75,5 @@ void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line);
 int	size_cmd_tab(char *line);
 char	*set_path(char **infos);
 void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line);
-void	clean_manage(t_manage_pipe *mpipe);
+void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt);
 #endif

@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 15:39:12 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/16 18:25:22 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/17 09:59:16 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_redirection(char c)
 }
 int	which_redirection(char c, int len_token)
 {
-	if (len == 1)
+	if (len_token == 1)
 	{
 		if (c == '>')
 			return (TOKEN_OUTPUT_REDIRECTION);
@@ -39,18 +39,22 @@ int	which_redirection(char c, int len_token)
 void	*determine_type(t_pipe *prompt)
 {
 	int i;
-	int j;
 
 	i = 0;
-	j = 0;
 	while (i < prompt->nb_token)
 	{
-		if (i == 0 && !is_redirection(prompt->scmd[i]->value[j]))
-			prompt->scmd[i]->type = TOKEN_CMD;
+		if (i == 0 && !is_redirection(prompt->scmd[0].value[0]))
+			prompt->scmd[i].type = TOKEN_CMD;
 
 		else if (i == 0)
-			prompt->scmd[i]->type = which_redirection(prompt->scmd[i]->value[j]);
+			prompt->scmd[i].type = which_redirection(prompt->scmd[i].value[0], prompt->scmd[i].len_value);
 
+		if (prompt->scmd[0].type == TOKEN_CMD)
+			prompt->scmd[i].type == TOKEN_ARG;
+			
+		if (is_redirection(prompt->scmd[i - 1].value[0]))
+			prompt->scmd[i].type == TOKEN_FILE;
+		
 	}
 
 	

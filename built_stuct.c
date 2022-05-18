@@ -6,19 +6,19 @@
 /*   By: avaures <marvin@42->fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/16 18:25:13 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/18 16:17:22 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_shell.h" 
 
-int	set_struct(t_manage_pipe utils, t_pipe **prompt)
+int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 {
 	int	i;
 	int	j;
 
 	i = -1;
-	*prompt = malloc(sizeof(t_pipe) * utils.nb_cmd);
+	*prompt = ft_calloc(sizeof(t_pipe), utils.nb_cmd);
 	if (!prompt)
 		return (1);
 	while (++i < utils.nb_cmd)

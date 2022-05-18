@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 09:31:14 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/13 17:15:11 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/18 18:01:04 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	mpipe->i = 0;
 	mpipe->j = 0;
 	mpipe->k = 0;
+	mpipe->end = -1;
 	mpipe->size = 0;
 	mpipe->nb_cmd = size_cmd_tab(line);
 	mpipe->size_cmd = ft_calloc(sizeof(int), mpipe->nb_cmd);
@@ -131,10 +132,10 @@ void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line)
 {
 	if ((set_manage(mpipe, line)) == NULL)
 		return (NULL);
-	mpipe->i = 0;
+	add_history(line);
 	make_tab_cmd(mpipe, line);
 }
-void	clean_manage(t_manage_pipe *mpipe)
+void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt)
 {
 	int	tmp;
 
@@ -148,4 +149,6 @@ void	clean_manage(t_manage_pipe *mpipe)
 	}
 	free(mpipe->pipecmd);
 	mpipe->pipecmd = NULL;
+	free_token(*mpipe, prompt);
+	free_struct(*mpipe, prompt);
 }
