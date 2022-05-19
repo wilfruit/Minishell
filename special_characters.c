@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 09:31:14 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/18 18:01:04 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/18 19:19:14 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,6 @@ void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt)
 	}
 	free(mpipe->pipecmd);
 	mpipe->pipecmd = NULL;
-	free_token(*mpipe, prompt);
-	free_struct(*mpipe, prompt);
+//	free_token(*mpipe, prompt);
+//	free_struct(*mpipe, prompt);
 }

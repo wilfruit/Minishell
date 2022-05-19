@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42->fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/18 16:17:22 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/18 19:54:50 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,13 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 	{
 		utils.j = 0;
 		(*prompt)[utils.i].nb_token = 1;
-		if ((*prompt)[utils.i].cmd[utils.j] == ' ')
-			while ((*prompt)[utils.i].cmd[utils.j] == ' ')
+		if (is_redirection((*prompt)[utils.i].cmd[utils.j]) == 1)
+		{
+			(*prompt)[utils.i].nb_token++;
+			while (is_redirection((*prompt)[utils.i].cmd[utils.j]) == 1)
+				utils.j++;
+		}
+		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
 	//	printf("before\n");
 		while ((*prompt)[utils.i].cmd[utils.j])
