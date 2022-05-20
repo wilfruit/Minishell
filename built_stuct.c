@@ -33,7 +33,7 @@ int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 			j++;
 		}
 		(*prompt)[i].cmd[j] = '\0';
-		printf("%s\n", (*prompt)[i].cmd);
+	//	printf("%s\n", (*prompt)[i].cmd);
 		(*prompt)[i].len_cmd = utils.size_cmd[i];
 		i++;
 	}
@@ -55,6 +55,8 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 			(*prompt)[utils.i].nb_token++;
 			while (is_redirection((*prompt)[utils.i].cmd[utils.j]) == 1)
 				utils.j++;
+			if (!(*prompt)[utils.i].cmd[utils.j])
+				(*prompt)[utils.i].nb_token = 1;
 		}
 		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
@@ -109,6 +111,7 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		utils.i++;
 	}
 	printf("-------------------------------------------------------------------------------------\n\n");
+
 }
 void	*found_len_token(t_manage_pipe utils, t_pipe **prompt)
 {
@@ -261,6 +264,9 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 			utils.k++;
 		//	printf("size_token :%d %d\n",utils.k, prompt[utils.i]->scmd[utils.k].len_value);
 		}
+		//printf("%d\n", utils.i);
+		// printf("hey %d\n", .nb_token);
+		determine_type(&(*prompt)[utils.i]);
 		utils.i++;
 	}
 	utils.i = 0;
@@ -279,4 +285,3 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 		utils.i++;
 	}
 }
-

@@ -15,29 +15,29 @@ int main(int argc, char **argv, char **env)
 {
 	char	*line;
 	char	*path;
-	int i = 0;
+	t_shell	shell_pack;
 	t_manage_pipe	mpipe;
 	t_pipe		*prompt;
 
-//	path = set_path(env);
-//	printf("%s\n", path);
+	//	path = set_path(env);
+	//	printf("%s\n", path);
+	//shell_pack.env = download_env(env);
+	//shell_pack.exports = download_env(env);
+	//shell_pack.std_in = open(copy->redir.in, O_RDONLY);
+	//shell_pack.std_out = open(copy->redir.out1, O_CREAT | O_RDWR | O_APPEND, 0644);
+	//shell_pack.std_error = open(copy->redir.out2, O_CREAT | O_RDWR | O_APPEND, 0644);
 	control();
-	line = NULL; 
+	line = NULL;
 	while (1)
-	//	readline( "mshell> " );
 	{
-		printf("%s\n", line = readline( "mshell> " ));
-		if (all_pipe_cmd(&mpipe, line) == NULL)
-			return (0);
-		if (set_struct(&line, mpipe, &prompt) == 0)
-			clean_manage(&mpipe, &prompt);
-	//	clean_manage(&mpipe, &prompt);
-//		set_manage(&mpipe, line);
-//		while (++i < mpipe.nb_cmd)
-//			printf("command n%d : %s\n",i, mpipe.pipecmd[i]);
-//		printf("nombre de commande : %d\n", size_cmd_tab(line));
+		line = readline( "mshell> " );
+		if (check_line(&line) == NULL || all_pipe_cmd(&mpipe, line) == NULL)
+			exit(0);
+		set_struct(&line, mpipe, &prompt);
+	//	minishell(&shell_pack);
+		clean_manage(&mpipe, &prompt);
+		free(line);
 	}
 	free(line);
 	return (0);
 }
-

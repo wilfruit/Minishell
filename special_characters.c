@@ -149,6 +149,6 @@ void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt)
 	}
 	free(mpipe->pipecmd);
 	mpipe->pipecmd = NULL;
-//	free_token(*mpipe, prompt);
-//	free_struct(*mpipe, prompt);
+	free_token(*mpipe, prompt);
+	free_struct(*mpipe, prompt);
 }
