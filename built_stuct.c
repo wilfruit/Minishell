@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42->fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/18 19:54:50 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/23 12:59:59 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 		{
 	//		printf("size_token :%d\n", prompt[utils.i]->scmd[utils.j].len_value);
 			(*prompt)[utils.i].scmd[utils.j].value = ft_calloc(sizeof(char), ((*prompt)[utils.i].scmd[utils.j].len_value + 1));
+			(*prompt)[utils.i].scmd[utils.j].is_dollar = 1;
 			utils.j++;
 		}
 	}
@@ -238,6 +239,8 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 					while ((*prompt)[utils.i].cmd[utils.j] != '\'')
 					{
 						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
+						if ((*prompt)[utils.i].scmd[utils.j].is_dollar == 1)
+							(*prompt)[utils.i].scmd[utils.j].is_dollar = 0;
 						v++;
 						utils.j++;
 					}

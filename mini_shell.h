@@ -6,7 +6,7 @@
 /*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/20 14:27:33 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/23 13:03:58 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_token
 {
 	int	type;
 	int	len_value;
+	int	is_dollar;
 	int	nb_token;
 	char	*value;
 }	t_token;

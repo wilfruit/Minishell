@@ -128,6 +128,7 @@ void	*make_tab_cmd(t_manage_pipe *mpipe, char *line)
 		mpipe->k++;
 	}
 }
+
 void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line)
 {
 	if ((set_manage(mpipe, line)) == NULL)
@@ -135,6 +136,7 @@ void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line)
 	add_history(line);
 	make_tab_cmd(mpipe, line);
 }
+
 void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt)
 {
 	int	tmp;

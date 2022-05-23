@@ -51,7 +51,6 @@ void	*determine_type(t_pipe *prompt)
 	int i;
 
 	i = -1;
-	//printf("hello\n");
 	printf("nb token : %d\n", prompt->nb_token);
 	while (++i < prompt->nb_token)
 	{
@@ -63,8 +62,12 @@ void	*determine_type(t_pipe *prompt)
 		else if (i > 0 && (prompt->scmd[i - 1].type == 0 || prompt->scmd[i - 1].type == 1))
 			prompt->scmd[i].type = TOKEN_ARG;
 		else if (i > 0 && is_redirection(prompt->scmd[i - 1].value[0]))
+		{
 			prompt->scmd[i].type = TOKEN_FILE;
-		else if (i > 0 && (prompt->scmd[i - 1].type == TOKEN_FILE))
+			if (which_redirection(prompt->scmd[i - 1].value[0], prompt->scmd[i - 1].len_value) == TOKEN_INTPUT_HEREDOC_REDIRECTION)
+				prompt->scmd[i].type = TOKEN_LIMITER;	
+		}	
+		else if (i > 0 && ((prompt->scmd[i - 1].type == TOKEN_FILE) || (prompt->scmd[i - 1].type == TOKEN_LIMITER)))
 			prompt->scmd[i].type = TOKEN_CMD;
 		else
 			prompt->scmd[i].type = TOKEN_ERROR;

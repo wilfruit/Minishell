@@ -11,12 +11,13 @@
 /* ************************************************************************** */
 
 #include "mini_shell.h"
+
 char	*set_path(char **str)
 {
 	int	i;
 
 	i = 0;
-	while(ft_strncmp("PATH=", str[i], 5) != 0)
+	while (ft_strncmp("PATH=", str[i], 5) != 0)
 		i++;
 	return (str[i] + 5);
 }
