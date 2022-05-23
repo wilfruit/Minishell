@@ -90,6 +90,8 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	mpipe->end = -1;
 	mpipe->size = 0;
 	mpipe->nb_cmd = size_cmd_tab(line);
+	if (mpipe->nb_cmd == 0)
+		return (NULL);
 	mpipe->size_cmd = ft_calloc(sizeof(int), mpipe->nb_cmd);
 	mpipe->pipecmd = ft_calloc(sizeof(char *), mpipe->nb_cmd);
 	if (!mpipe->size_cmd || !mpipe->pipecmd)
@@ -97,7 +99,11 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	while (++tmp < mpipe->nb_cmd)
 		mpipe->size_cmd[tmp] = 0; 
 	if (len_cmd_pipe(mpipe, line) == NULL)
+	{
+		free(mpipe->size_cmd);
+		free(mpipe->pipecmd);
 		return (NULL);
+	}
 	tmp = -1;
 	while (++tmp < mpipe->nb_cmd)
 	{

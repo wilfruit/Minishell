@@ -33,7 +33,6 @@ int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 			j++;
 		}
 		(*prompt)[i].cmd[j] = '\0';
-	//	printf("%s\n", (*prompt)[i].cmd);
 		(*prompt)[i].len_cmd = utils.size_cmd[i];
 		i++;
 	}
@@ -60,7 +59,6 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		}
 		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
-	//	printf("before\n");
 		while ((*prompt)[utils.i].cmd[utils.j])
 		{
 			if ((*prompt)[utils.i].cmd[utils.j] == '\'')
@@ -96,7 +94,6 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 			else
 				utils.j++;
 		}
-	//	printf("after\n");
 		(*prompt)[utils.i].scmd = malloc(sizeof(t_token) * ((*prompt)[utils.i].nb_token));
 		utils.i++;
 	}
@@ -200,7 +197,6 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 		{
 	//		printf("size_token :%d\n", prompt[utils.i]->scmd[utils.j].len_value);
 			(*prompt)[utils.i].scmd[utils.j].value = ft_calloc(sizeof(char), ((*prompt)[utils.i].scmd[utils.j].len_value + 1));
-			(*prompt)[utils.i].scmd[utils.j].is_dollar = 1;
 			utils.j++;
 		}
 	}
@@ -239,8 +235,8 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 					while ((*prompt)[utils.i].cmd[utils.j] != '\'')
 					{
 						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-						if ((*prompt)[utils.i].scmd[utils.j].is_dollar == 1)
-							(*prompt)[utils.i].scmd[utils.j].is_dollar = 0;
+						if ((*prompt)[utils.i].cmd[utils.j] == '$')
+							(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_NO;
 						v++;
 						utils.j++;
 					}
@@ -252,6 +248,8 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 					while ((*prompt)[utils.i].cmd[utils.j] != '\"')
 					{
 						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
+						if ((*prompt)[utils.i].cmd[utils.j] == '$')
+							(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_MACRO;
 						v++;
 						utils.j++;
 					}
@@ -259,16 +257,15 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 				}
 				if (((*prompt)[utils.i].cmd[utils.j] != '\0') && (*prompt)[utils.i].cmd[utils.j] != ' ')	
 				{
+					if ((*prompt)[utils.i].cmd[utils.j] == '$')
+						(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_MACRO;
 					(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
 					utils.j++;
 					v++;
 				}
 			}
 			utils.k++;
-		//	printf("size_token :%d %d\n",utils.k, prompt[utils.i]->scmd[utils.k].len_value);
 		}
-		//printf("%d\n", utils.i);
-		// printf("hey %d\n", .nb_token);
 		determine_type(&(*prompt)[utils.i]);
 		utils.i++;
 	}
@@ -281,6 +278,7 @@ void	*set_token(t_manage_pipe utils, t_pipe **prompt)
 		while (utils.k < (*prompt)[utils.i].nb_token)
 		{
 			printf("token[%d] : %s\n",utils.k, (*prompt)[utils.i].scmd[utils.k].value);
+			printf("is_dollar : %d\n", (*prompt)[utils.i].scmd[utils.k].is_dollar);
 			utils.k++;
 		}
 		printf("-------------------------------------------------\n");

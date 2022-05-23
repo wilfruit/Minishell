@@ -20,8 +20,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdlib.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 # include "./libft/libft.h"
-#include <signal.h>
+# include <signal.h>
 
 # define TOKEN_ERROR -1
 # define TOKEN_CMD 0
@@ -32,6 +35,9 @@
 # define TOKEN_INTPUT_HEREDOC_REDIRECTION 5
 # define TOKEN_FILE 6
 # define TOKEN_LIMITER 7
+
+# define DOLLAR_NO 0
+# define DOLLAR_MACRO 1
 
 extern int	global_error;
 
@@ -46,8 +52,6 @@ typedef struct s_manage_pipe
 	int	*size_cmd;
 	char	**pipecmd;
 }	t_manage_pipe;
-
-
 
 typedef struct s_token
 {
@@ -66,6 +70,12 @@ typedef struct	s_pipe
 	int	nb_token;
 }	t_pipe;
 
+typedef struct    s_envi
+{
+    char        *str;
+    struct s_envi    *next;
+}        t_envi;
+
 typedef struct	s_shell
 {
 	int	exit_end;
@@ -73,8 +83,8 @@ typedef struct	s_shell
 	int	std_out;
 	int	std_error;
 	t_pipe	*token;
-//	t_envi	*env;
-//	t_envi	*exports;
+	t_envi	*env;
+	t_envi	*exports;
 }		t_shell;
 
 void	forced_prompt(int sig);
@@ -96,4 +106,7 @@ char	*set_path(char **infos);
 void 	*determine_type(t_pipe *prompt);
 void	*all_pipe_cmd(t_manage_pipe *mpipe, char *line);
 void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt);
+t_envi    *init_our_env(char **env);
+int    download_env_two(t_shell *our_shell, char **env);
+int    download_env_one(t_shell *our_shell, char **env);
 #endif
