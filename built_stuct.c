@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_stuct.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaures <marvin@42->fr>                     +#+  +:+       +#+        */
+/*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/23 12:59:59 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/24 17:53:56 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,9 @@ int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 	i = 0;
 	while (i < utils.nb_cmd)
 	{
-		j = 0;
-		while (utils.pipecmd[i][j])
-		{
+		j = -1;
+		while (utils.pipecmd[i][++j])
 			(*prompt)[i].cmd[j] = utils.pipecmd[i][j];
-			j++;
-		}
 		(*prompt)[i].cmd[j] = '\0';
 		(*prompt)[i].len_cmd = utils.size_cmd[i];
 		i++;
@@ -40,6 +37,35 @@ int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 	found_len_token(utils, prompt);
 	set_token(utils, prompt);
 	return (0);
+}
+
+void	*more_help_cmd_struct(int *nb_cmd, int *len_cmd, t_pipe **prompt)
+{
+	if (is_redirection((*prompt)[*nb_cmd].cmd[*len_cmd]) == 1)
+	{
+		*len_cmd += 1;
+		if (is_redirection((*prompt)[*nb_cmd].cmd[*len_cmd]) == 1)
+			*len_cmd += 1;
+		(*prompt)[*nb_cmd].nb_token++;
+	}
+	while ((*prompt)[*nb_cmd].cmd[*len_cmd] == ' ')
+		*len_cmd += 1;
+	if ((*prompt)[*nb_cmd].cmd[*len_cmd] && !\
+	is_redirection((*prompt)[*nb_cmd].cmd[*len_cmd]) \
+	&& (*prompt)[*nb_cmd].cmd[*len_cmd] != '$')
+		(*prompt)[*nb_cmd].nb_token++;
+}
+
+void	*last_help_cmd_struct(int *nb_cmd, int *len_cmd, t_pipe **prompt)
+{
+	if (*len_cmd > 0)
+		(*prompt)[*nb_cmd].nb_token++;
+	while ((*prompt)[*nb_cmd].cmd[*len_cmd] && \
+	(*prompt)[*nb_cmd].cmd[*len_cmd] != ' '\
+	&& (*prompt)[*nb_cmd].cmd[*len_cmd] != '\'' && \
+	(*prompt)[*nb_cmd].cmd[*len_cmd] != '\"'\
+	&& !is_redirection((*prompt)[*nb_cmd].cmd[*len_cmd]))
+		*len_cmd += 1;
 }
 
 void	*help_cmd_struct(int nb_cmd, int len_cmd, t_pipe **prompt)
@@ -60,32 +86,11 @@ void	*help_cmd_struct(int nb_cmd, int len_cmd, t_pipe **prompt)
 				len_cmd++;
 			len_cmd++;
 		}
-		else if ((is_redirection((*prompt)[nb_cmd].cmd[len_cmd])\
-		 == 1) || ((*prompt)[nb_cmd].cmd[len_cmd] == ' '))
-		{
-			if (is_redirection((*prompt)[nb_cmd].cmd[len_cmd]) == 1)
-			{
-				len_cmd++;
-				if (is_redirection((*prompt)[nb_cmd].cmd[len_cmd]) == 1)
-					len_cmd++;
-				(*prompt)[nb_cmd].nb_token++;
-			}
-			while ((*prompt)[nb_cmd].cmd[len_cmd] == ' ')
-					len_cmd++;
-			if ((*prompt)[nb_cmd].cmd[len_cmd] && !\
-			is_redirection((*prompt)[nb_cmd].cmd[len_cmd])\
-			&& (*prompt)[nb_cmd].cmd[len_cmd] != '$')
-				(*prompt)[nb_cmd].nb_token++;
-		}
+		else if ((is_redirection((*prompt)[nb_cmd].cmd[len_cmd]) \
+		== 1) || ((*prompt)[nb_cmd].cmd[len_cmd] == ' '))
+			more_help_cmd_struct(&nb_cmd, &len_cmd, prompt);
 		else if ((*prompt)[nb_cmd].cmd[len_cmd] == '$')
-		{
-			if (len_cmd > 0)
-				(*prompt)[nb_cmd].nb_token++;
-			while ((*prompt)[nb_cmd].cmd[len_cmd] && (*prompt)[nb_cmd].cmd[len_cmd] != ' '\
-			&& (*prompt)[nb_cmd].cmd[len_cmd] != '\'' && (*prompt)[nb_cmd].cmd[len_cmd] != '\"'\
-			&& !is_redirection((*prompt)[nb_cmd].cmd[len_cmd]))
-				len_cmd++;
-		}
+			last_help_cmd_struct(&nb_cmd, &len_cmd, prompt);
 		else
 			len_cmd++;
 	}
@@ -109,7 +114,8 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
 		help_cmd_struct(utils.i, utils.j, prompt);
-		(*prompt)[utils.i].scmd = malloc(sizeof(t_token) * ((*prompt)[utils.i].nb_token));
+		(*prompt)[utils.i].scmd = malloc(sizeof(t_token) * \
+		((*prompt)[utils.i].nb_token));
 		utils.i++;
 	}
 	utils.i = 0;
@@ -120,87 +126,6 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		printf("nb_token : %d\n", (*prompt)[utils.i].nb_token);
 		printf("-------------------------------------------------\n");
 		printf("\n\n");
-		utils.i++;
-	}
-	printf("-------------------------------------------------------------------------------------\n\n");
-
-}
-void	*found_len_token(t_manage_pipe utils, t_pipe **prompt)
-{
-	utils.i = 0;
-	while (utils.i < utils.nb_cmd)
-	{
-		utils.j = 0;
-		utils.k = 0;
-		while ((*prompt)[utils.i].cmd[utils.j])
-		{	
-			while ((*prompt)[utils.i].cmd[utils.j] == ' ')
-				utils.j++;
-			if ((*prompt)[utils.i].cmd[utils.j] != '\0')
-				(*prompt)[utils.i].scmd[utils.k].len_value = 0;
-			if (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-			{
-				while (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-				{
-						(*prompt)[utils.i].scmd[utils.k].len_value++;
-						utils.j++;
-				}
-				if ((*prompt)[utils.i].cmd[utils.j] != ' ')
-					utils.k++;
-			}
-			if (((*prompt)[utils.i].cmd[utils.j] == '$'))
-			{
-				(*prompt)[utils.i].scmd[utils.k].len_value++;	
-				utils.j++;
-			}
-			while (((*prompt)[utils.i].cmd[utils.j] && 
-			(*prompt)[utils.i].cmd[utils.j] != ' ') && 
-			(utils.k < (*prompt)[utils.i].nb_token) && \
-			!is_redirection((*prompt)[utils.i].cmd[utils.j])\
-			&& ((*prompt)[utils.i].cmd[utils.j] != '$'))
-			{	
-				if ((*prompt)[utils.i].cmd[utils.j] == '\'')
-				{
-					utils.j++;
-					while ((*prompt)[utils.i].cmd[utils.j] != '\'')
-					{
-						(*prompt)[utils.i].scmd[utils.k].len_value++;
-						utils.j++;
-					}
-					utils.j++;
-				}
-				if ((*prompt)[utils.i].cmd[utils.j] == '\"')
-				{
-					utils.j++;
-					while ((*prompt)[utils.i].cmd[utils.j] != '\"')
-					{
-						(*prompt)[utils.i].scmd[utils.k].len_value++;
-						utils.j++;
-					}
-					utils.j++;
-				}
-				if ((*prompt)[utils.i].cmd[utils.j] && (*prompt)[utils.i].cmd[utils.j] != ' ')	
-				{
-					(*prompt)[utils.i].scmd[utils.k].len_value++;
-					utils.j++;
-				}
-			}
-			utils.k++;
-		}
-		utils.i++;
-	}
-	utils.i = 0;
-	while (utils.i < utils.nb_cmd)
-	{
-		utils.j = 0;
-		printf("command[%d]\n", utils.i);
-		printf("-------------------------------------------------\n");
-		while (utils.j < (*prompt)[utils.i].nb_token)
-		{
-			printf("size_token : %d\n", (*prompt)[utils.i].scmd[utils.j].len_value);
-			utils.j++;
-		}
-		printf("-------------------------------------------------\n");
 		utils.i++;
 	}
 	printf("-------------------------------------------------------------------------------------\n\n");

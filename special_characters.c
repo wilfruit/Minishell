@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   special_characters.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 09:31:14 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/18 19:19:14 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/24 18:23:25 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 {
 	int	r;
 	int	cmd;
+
 	r = 0;
 	cmd = 0;
 	mpipe->size = 0;
@@ -30,7 +31,6 @@ void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 				mpipe->size++;
 				r++;
 			}
-
 			if (line[r] != '\'')
 				return (write(1, "invalid syntax\n", 15), NULL);
 			mpipe->size++;
@@ -43,11 +43,11 @@ void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 			if (is_redirection(line[r]) == 1)
 			{
 				if (line[r - 1] != line[r])
-					return (write(1, "syntax error near unexpected token\n", 35), NULL);
+					return (write(1, "syntax error near unexpected \
+					token\n", 35), NULL);
 				mpipe->size++;
 				r++;
-			}
-			
+			}		
 		}
 		else if (line[r] == '\"')
 		{
@@ -97,7 +97,7 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	if (!mpipe->size_cmd || !mpipe->pipecmd)
 		return (NULL);
 	while (++tmp < mpipe->nb_cmd)
-		mpipe->size_cmd[tmp] = 0; 
+		mpipe->size_cmd[tmp] = 0;
 	if (len_cmd_pipe(mpipe, line) == NULL)
 	{
 		free(mpipe->size_cmd);
@@ -108,11 +108,13 @@ void	*set_manage(t_manage_pipe *mpipe, char *line)
 	while (++tmp < mpipe->nb_cmd)
 	{
 		printf("tmp : %d/ nb_cmd : %d/ lencmd : %d\n", tmp, mpipe->nb_cmd, mpipe->size_cmd[tmp]);
-		mpipe->pipecmd[tmp] = ft_calloc(sizeof(char), (mpipe->size_cmd[tmp] + 1));
+		mpipe->pipecmd[tmp] = ft_calloc(sizeof(char), \
+		(mpipe->size_cmd[tmp] + 1));
 		if (mpipe->pipecmd[tmp] == NULL)
 			return (NULL);
 	}
 }
+
 void	*make_tab_cmd(t_manage_pipe *mpipe, char *line)
 {
 	int	l;
@@ -147,7 +149,7 @@ void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt)
 {
 	int	tmp;
 
-	tmp  = -1;
+	tmp = -1;
 	free(mpipe->size_cmd);
 	mpipe->size_cmd = NULL;
 	while (++tmp < mpipe->nb_cmd)
