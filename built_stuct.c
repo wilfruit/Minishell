@@ -42,6 +42,55 @@ int	set_struct(char **line, t_manage_pipe utils, t_pipe **prompt)
 	return (0);
 }
 
+void	*help_cmd_struct(int nb_cmd, int len_cmd, t_pipe **prompt)
+{
+	while ((*prompt)[nb_cmd].cmd[len_cmd])
+	{
+		if ((*prompt)[nb_cmd].cmd[len_cmd] == '\'')
+		{
+			len_cmd++;
+			while ((*prompt)[nb_cmd].cmd[len_cmd] != '\'')
+				len_cmd++;
+			len_cmd++;
+		}
+		else if ((*prompt)[nb_cmd].cmd[len_cmd] == '\"')
+		{
+			len_cmd++;
+			while ((*prompt)[nb_cmd].cmd[len_cmd] != '\"')
+				len_cmd++;
+			len_cmd++;
+		}
+		else if ((is_redirection((*prompt)[nb_cmd].cmd[len_cmd])\
+		 == 1) || ((*prompt)[nb_cmd].cmd[len_cmd] == ' '))
+		{
+			if (is_redirection((*prompt)[nb_cmd].cmd[len_cmd]) == 1)
+			{
+				len_cmd++;
+				if (is_redirection((*prompt)[nb_cmd].cmd[len_cmd]) == 1)
+					len_cmd++;
+				(*prompt)[nb_cmd].nb_token++;
+			}
+			while ((*prompt)[nb_cmd].cmd[len_cmd] == ' ')
+					len_cmd++;
+			if ((*prompt)[nb_cmd].cmd[len_cmd] && !\
+			is_redirection((*prompt)[nb_cmd].cmd[len_cmd])\
+			&& (*prompt)[nb_cmd].cmd[len_cmd] != '$')
+				(*prompt)[nb_cmd].nb_token++;
+		}
+		else if ((*prompt)[nb_cmd].cmd[len_cmd] == '$')
+		{
+			if (len_cmd > 0)
+				(*prompt)[nb_cmd].nb_token++;
+			while ((*prompt)[nb_cmd].cmd[len_cmd] && (*prompt)[nb_cmd].cmd[len_cmd] != ' '\
+			&& (*prompt)[nb_cmd].cmd[len_cmd] != '\'' && (*prompt)[nb_cmd].cmd[len_cmd] != '\"'\
+			&& !is_redirection((*prompt)[nb_cmd].cmd[len_cmd]))
+				len_cmd++;
+		}
+		else
+			len_cmd++;
+	}
+}
+
 void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 {
 	utils.i = 0;
@@ -59,41 +108,7 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		}
 		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
-		while ((*prompt)[utils.i].cmd[utils.j])
-		{
-			if ((*prompt)[utils.i].cmd[utils.j] == '\'')
-			{
-				utils.j++;
-				while ((*prompt)[utils.i].cmd[utils.j] != '\'')
-					utils.j++;
-				utils.j++;
-			}
-			else if ((*prompt)[utils.i].cmd[utils.j] == '\"')
-			{
-				utils.j++;
-				while ((*prompt)[utils.i].cmd[utils.j] != '\"')
-					utils.j++;
-				utils.j++;
-			}
-			else if ((is_redirection((*prompt)[utils.i].cmd[utils\
-			.j]) == 1) || ((*prompt)[utils.i].cmd[utils.j] == ' '))
-			{
-				if (is_redirection((*prompt)[utils.i].cmd[utils.j]) == 1)
-				{
-					utils.j++;
-					if (is_redirection((*prompt)[utils.i].cmd[utils.j]) == 1)
-						utils.j++;
-					(*prompt)[utils.i].nb_token++;
-				}
-				while ((*prompt)[utils.i].cmd[utils.j] == ' ')
-						utils.j++;
-				if ((*prompt)[utils.i].cmd[utils.j] && !\
-				is_redirection((*prompt)[utils.i].cmd[utils.j]))
-					(*prompt)[utils.i].nb_token++;
-			}
-			else
-				utils.j++;
-		}
+		help_cmd_struct(utils.i, utils.j, prompt);
 		(*prompt)[utils.i].scmd = malloc(sizeof(t_token) * ((*prompt)[utils.i].nb_token));
 		utils.i++;
 	}
@@ -118,7 +133,7 @@ void	*found_len_token(t_manage_pipe utils, t_pipe **prompt)
 		utils.j = 0;
 		utils.k = 0;
 		while ((*prompt)[utils.i].cmd[utils.j])
-		{
+		{	
 			while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
 			if ((*prompt)[utils.i].cmd[utils.j] != '\0')
@@ -133,10 +148,16 @@ void	*found_len_token(t_manage_pipe utils, t_pipe **prompt)
 				if ((*prompt)[utils.i].cmd[utils.j] != ' ')
 					utils.k++;
 			}
+			if (((*prompt)[utils.i].cmd[utils.j] == '$'))
+			{
+				(*prompt)[utils.i].scmd[utils.k].len_value++;	
+				utils.j++;
+			}
 			while (((*prompt)[utils.i].cmd[utils.j] && 
 			(*prompt)[utils.i].cmd[utils.j] != ' ') && 
 			(utils.k < (*prompt)[utils.i].nb_token) && \
-			is_redirection((*prompt)[utils.i].cmd[utils.j]) == 0)
+			!is_redirection((*prompt)[utils.i].cmd[utils.j])\
+			&& ((*prompt)[utils.i].cmd[utils.j] != '$'))
 			{	
 				if ((*prompt)[utils.i].cmd[utils.j] == '\'')
 				{
@@ -183,106 +204,4 @@ void	*found_len_token(t_manage_pipe utils, t_pipe **prompt)
 		utils.i++;
 	}
 	printf("-------------------------------------------------------------------------------------\n\n");
-}
-
-void	*set_token(t_manage_pipe utils, t_pipe **prompt)
-{
-	int	v;
-
-	utils.i = -1;
-	while (++utils.i < utils.nb_cmd)
-	{
-		utils.j = 0;
-		while (utils.j < (*prompt)[utils.i].nb_token)
-		{
-	//		printf("size_token :%d\n", prompt[utils.i]->scmd[utils.j].len_value);
-			(*prompt)[utils.i].scmd[utils.j].value = ft_calloc(sizeof(char), ((*prompt)[utils.i].scmd[utils.j].len_value + 1));
-			utils.j++;
-		}
-	}
-	utils.i = 0;
-	while (utils.i < utils.nb_cmd)
-	{
-		utils.j = 0;
-		utils.k = 0;
-		while ((*prompt)[utils.i].cmd[utils.j])
-		{
-			v = 0;
-			while ((*prompt)[utils.i].cmd[utils.j] == ' ')
-				utils.j++;
-			if (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-			{
-				while (is_redirection((*prompt)[utils.i].cmd[utils.j]))
-				{
-						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-						utils.j++;
-						v++;
-				}
-				if ((*prompt)[utils.i].cmd[utils.j] != ' ')
-				{
-					utils.k++;
-					v = 0;
-				}
-			}
-			while (((*prompt)[utils.i].cmd[utils.j] && 
-			(*prompt)[utils.i].cmd[utils.j] != ' ') && 
-			(utils.k < (*prompt)[utils.i].nb_token) && \
-			is_redirection((*prompt)[utils.i].cmd[utils.j]) == 0)
-			{	
-				if ((*prompt)[utils.i].cmd[utils.j] == '\'')
-				{
-					utils.j++;
-					while ((*prompt)[utils.i].cmd[utils.j] != '\'')
-					{
-						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-						if ((*prompt)[utils.i].cmd[utils.j] == '$')
-							(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_NO;
-						v++;
-						utils.j++;
-					}
-					utils.j++;
-				}
-				if ((*prompt)[utils.i].cmd[utils.j] == '\"')
-				{
-					utils.j++;
-					while ((*prompt)[utils.i].cmd[utils.j] != '\"')
-					{
-						(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-						if ((*prompt)[utils.i].cmd[utils.j] == '$')
-							(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_MACRO;
-						v++;
-						utils.j++;
-					}
-					utils.j++;
-				}
-				if (((*prompt)[utils.i].cmd[utils.j] != '\0') && (*prompt)[utils.i].cmd[utils.j] != ' ')	
-				{
-					if ((*prompt)[utils.i].cmd[utils.j] == '$')
-						(*prompt)[utils.i].scmd[utils.k].is_dollar = DOLLAR_MACRO;
-					(*prompt)[utils.i].scmd[utils.k].value[v] = (*prompt)[utils.i].cmd[utils.j];
-					utils.j++;
-					v++;
-				}
-			}
-			utils.k++;
-		}
-		determine_type(&(*prompt)[utils.i]);
-		utils.i++;
-	}
-	utils.i = 0;
-	while (utils.i < utils.nb_cmd)
-	{
-		utils.k = 0;
-		printf("commande[%d]\n", utils.i);
-		printf("-------------------------------------------------\n");
-		while (utils.k < (*prompt)[utils.i].nb_token)
-		{
-			printf("token[%d] : %s\n",utils.k, (*prompt)[utils.i].scmd[utils.k].value);
-			printf("is_dollar : %d\n", (*prompt)[utils.i].scmd[utils.k].is_dollar);
-			utils.k++;
-		}
-		printf("-------------------------------------------------\n");
-		printf("\n\n");
-		utils.i++;
-	}
 }

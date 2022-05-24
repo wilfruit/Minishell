@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avaures <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/23 13:03:58 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/24 12:42:41 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	free_struct(t_manage_pipe utils, t_pipe **prompt);
 void	free_token(t_manage_pipe utils, t_pipe **prompt);
 int		is_redirection(char c);
 int		set_struct(char **line, t_manage_pipe utils, t_pipe **prompt);
+void	*help_cmd_struct(int nb_cmd, int len_cmd, t_pipe **prompt);
 void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt);
 void	*found_len_token(t_manage_pipe utils, t_pipe **prompt);
 void	*set_token(t_manage_pipe utils, t_pipe **prompt);

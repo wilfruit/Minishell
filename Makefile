@@ -1,5 +1,5 @@
 SRC = start_pars.c special_characters.c main.c built_stuct.c redirection.c \
-utils.c
+utils.c legible_struct.c
 
 CC = gcc
 
