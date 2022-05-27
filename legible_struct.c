@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 12:05:29 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/24 18:03:31 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 13:26:19 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	*first_help_set_token(int *i, int *j, int *k, int *v, t_pipe **prompt)
 		{
 			(*prompt)[*i].scmd[*k].value[*v] = (*prompt)[*i].cmd[*j];
 			*j += 1;
-			v += 1;
+			*v += 1;
 		}
 		if ((*prompt)[*i].cmd[*j] != ' ')
 		{

@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 09:31:14 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/24 18:23:25 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 13:23:22 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,69 +14,30 @@
 
 void	*len_cmd_pipe(t_manage_pipe *mpipe, char *line)
 {
-	int	r;
-	int	cmd;
-
-	r = 0;
-	cmd = 0;
+	mpipe->i = 0;
+	mpipe->j = 0;
 	mpipe->size = 0;
-	while (line[r])
+	while (line[mpipe->i])
 	{
-		if (line[r] == '\'')
+		if (line[mpipe->i] == '\'' || line[mpipe->i] == '\"')
 		{
-			r++;
-			mpipe->size++;
-			while (line[r] && line[r] != '\'')
-			{
-				mpipe->size++;
-				r++;
-			}
-			if (line[r] != '\'')
-				return (write(1, "invalid syntax\n", 15), NULL);
-			mpipe->size++;
-			r++;
+			if (len_d_quote(&mpipe->i, mpipe, line) == NULL)
+				return (NULL);
 		}
-		else if (is_redirection(line[r]) == 1)
+		else if (is_redirection(line[mpipe->i]) == 1)
 		{
-			mpipe->size++;
-			r++;
-			if (is_redirection(line[r]) == 1)
-			{
-				if (line[r - 1] != line[r])
-					return (write(1, "syntax error near unexpected \
-					token\n", 35), NULL);
-				mpipe->size++;
-				r++;
-			}		
+			if(len_redir(&mpipe->i, mpipe, line) == NULL)
+				return (NULL);
 		}
-		else if (line[r] == '\"')
-		{
-			r++;
-			mpipe->size++;
-			while (line[r] && line[r] != '\"')
-			{
-				mpipe->size++;
-				r++;
-			}
-			if (line[r] != '\"')
-				return (write(1, "invalid syntax\n", 15), NULL);
-			mpipe->size++;
-			r++;
-		}
-		else if (line[r] == '|')
-		{
-			(*mpipe).size_cmd[cmd] = (*mpipe).size;
-			mpipe->size = 0;
-			cmd++;
-			r++;
-		}
+		else if (line[mpipe->i] == '|')
+			cpt_pipe(&mpipe->i, &mpipe->j, mpipe, line);
 		else
 		{
 			mpipe->size++;
-			r++;
+			mpipe->i++;
 		}
 	}
-	mpipe->size_cmd[cmd] = mpipe->size;
+	mpipe->size_cmd[mpipe->j] = mpipe->size;
 }
 
 void	*set_manage(t_manage_pipe *mpipe, char *line)

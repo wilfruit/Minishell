@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 10:35:38 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/24 18:10:33 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 13:56:15 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ int	main(int argc, char **argv, char **env)
 	char			*line;
 	char			*path;
 	t_shell			shell_pack;
-	t_manage_pipe	mpipe;
-	t_pipe			*prompt;
 
 	download_env_one(&shell_pack, env);
 	download_env_two(&shell_pack, env);
@@ -39,10 +37,10 @@ int	main(int argc, char **argv, char **env)
 		line = readline("mshell> " );
 		if (check_line(&line) == NULL)
 			exit(0);
-		if (all_pipe_cmd(&mpipe, line) != NULL)
+		if (all_pipe_cmd(&shell_pack.mpipe, line) != NULL)
 		{
-			set_struct(&line, mpipe, &prompt);
-			clean_manage(&mpipe, &prompt);
+			set_struct(&line, shell_pack.mpipe, &shell_pack.token);
+			clean_manage(&shell_pack.mpipe, &shell_pack.token);
 			//	minishell(&shell_pack);
 		}
 		free(line);

@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 16:03:46 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/24 17:53:56 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 14:06:25 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	*cmd_struct(t_manage_pipe utils, t_pipe **prompt)
 		while ((*prompt)[utils.i].cmd[utils.j] == ' ')
 				utils.j++;
 		help_cmd_struct(utils.i, utils.j, prompt);
-		(*prompt)[utils.i].scmd = malloc(sizeof(t_token) * \
+		(*prompt)[utils.i].scmd = calloc(sizeof(t_token), \
 		((*prompt)[utils.i].nb_token));
 		utils.i++;
 	}

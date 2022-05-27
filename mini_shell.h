@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/02 12:45:56 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/24 18:17:12 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 13:53:35 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,14 @@ typedef struct s_envi
 
 typedef struct s_shell
 {
-	int		exit_end;
-	int		std_in;
-	int		std_out;
-	int		std_error;
-	t_pipe	*token;
-	t_envi	*env;
-	t_envi	*exports;
+	int				exit_end;
+	int				std_in;
+	int				std_out;
+	int				std_error;
+	t_manage_pipe	mpipe;
+	t_pipe			*token;
+	t_envi			*env;
+	t_envi			*exports;
 }		t_shell;
 
 void	forced_prompt(int sig);
@@ -119,4 +120,10 @@ void	clean_manage(t_manage_pipe *mpipe, t_pipe **prompt);
 t_envi	*init_our_env(char **env);
 int		download_env_two(t_shell *our_shell, char **env);
 int		download_env_one(t_shell *our_shell, char **env);
+void    *help_len_cmd(int *r, t_manage_pipe *mpipe, char *line);
+void	*len_s_quote(int *r, t_manage_pipe *mpipe, char *line);
+void	*len_d_quote(int *r, t_manage_pipe *mpipe, char *line);
+void	*len_redir(int *r, t_manage_pipe *mpipe, char *line);
+void    *cpt_pipe(int *r, int *cmd, t_manage_pipe *mpipe, char *line);
+
 #endif
