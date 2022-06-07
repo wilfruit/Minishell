@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 10:35:38 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/27 13:56:15 by avaures          ###   ########.fr       */
+/*   Updated: 2022/06/07 15:05:19 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ int	main(int argc, char **argv, char **env)
 		if (all_pipe_cmd(&shell_pack.mpipe, line) != NULL)
 		{
 			set_struct(&line, shell_pack.mpipe, &shell_pack.token);
-			clean_manage(&shell_pack.mpipe, &shell_pack.token);
 			//	minishell(&shell_pack);
+			clean_manage(&shell_pack.mpipe, &shell_pack.token);
 		}
 		free(line);
 	}

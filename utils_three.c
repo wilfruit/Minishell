@@ -6,7 +6,7 @@
 /*   By: avaures <avaures@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 11:24:12 by avaures           #+#    #+#             */
-/*   Updated: 2022/05/27 12:07:30 by avaures          ###   ########.fr       */
+/*   Updated: 2022/05/27 15:10:44 by avaures          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ void	*len_d_quote(int *r, t_manage_pipe *mpipe, char *line)
     {
         *r += 1;
 	    mpipe->size += 1;
-	    while (line[*r] && line[*r] != '\"')
+	    while (line[*r] && line[*r] != '\'')
 	    {
 		    mpipe->size += 1;
 	    	*r += 1;
 	    }
-	    if (line[*r] != '\"')
+	    if (line[*r] != '\'')
 	    	return (write(1, "invalid syntax\n", 15), NULL);
 	    mpipe->size += 1;
 	    *r += 1;
